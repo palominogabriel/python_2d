@@ -1,5 +1,5 @@
 import pygame
-import screen
+from game_object import Game_Object
 
 # State position constants
 X_0 = 151
@@ -11,20 +11,20 @@ Y_1 = 400
 X_2 = 165
 Y_2 = 569
 
-class Menu_Screen(screen.Screen):
+class Menu_GameObject(Game_Object):
     def __init__(self):
-        screen.Screen.__init__(self,'menu_screen')
+        Game_Object.__init__(self, 'menu_screen')
         self.sprite = pygame.image.load("imgs/Menu.png")
 
-class Instruction_Screen(screen.Screen):
+class Instruction_GameObject(Game_Object):
     def __init__(self):
-        screen.Screen.__init__(self,'instruction_screen')
+        Game_Object.__init__(self, 'instruction_screen')
         self.sprite = pygame.image.load("imgs/Instructions.png")
 
-class Selection(screen.Screen):
+class Selection(Game_Object):
 
     def __init__(self):
-        screen.Screen.__init__(self,'menu_selection')
+        Game_Object.__init__(self, 'menu_selection')
         self.sprite = pygame.image.load("imgs/selection.png")
         self.__state = 0
         self.x = X_0

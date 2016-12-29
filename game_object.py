@@ -1,12 +1,11 @@
-X_MAX = 640
-Y_MAX = 704
-
-class Screen:
+class Game_Object:
     def __init__(self, name):
         self.__name = name
         self.__sprite = None
         self.__x = 0
         self.__y = 0
+        self.X_MAX = 640
+        self.Y_MAX = 704
 
     # Setters and Getters
 
