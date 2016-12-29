@@ -3,20 +3,13 @@ import math
 from shoot import Shoot
 from game_object import Game_Object
 
-PX_MIDDLE = 204
-PY_BOTTOM = 582
-
-P_WIDTH = 232
-P_HEIGHT = 121
-
 class Player(Game_Object):
-    def __init__(self):
-        Game_Object.__init__(self,'player')
+    def __init__(self, screen):
+        Game_Object.__init__(self,'player',screen)
         self.sprite = pygame.image.load("imgs/player.png")
-        self.x = PX_MIDDLE
-        self.y = PY_BOTTOM
-        self.__width = 232
-        self.__height = 121
+        self.width, self.height = self.sprite.get_size()
+        self.x = math.ceil(self.get_screen_size()[0] / 2) - math.ceil(self.width / 2)
+        self.y = self.get_screen_size()[1] - self.height - 5
         self.__score = 0
         self.__life = 3
         self.__remaining_enemies = 10
@@ -29,28 +22,12 @@ class Player(Game_Object):
 
     @x.setter
     def x(self,value):
-        if value > self.X_MAX - self.width:
-            self.__x = self.X_MAX - self.width
+        if value > self.get_screen_size()[0] - self.width:
+            self.__x = self.get_screen_size()[0] - self.width
         elif value < 0:
             self.__x = 0
         else:
             self.__x = value
-            
-    @property
-    def width(self):
-        return self.__width
-    
-    @width.setter
-    def width(self,value):
-        self.__width = value
-
-    @property
-    def height(self):
-        return self.__height
-
-    @height.setter
-    def height(self, value):
-        self.__height = value
 
     @property
     def score(self):
@@ -86,14 +63,15 @@ class Player(Game_Object):
 
     # Behavior
     def move_left(self):
-        self.x -= 1
+        self.x -= 5
 
     def move_right(self):
-        self.x += 1
+        self.x += 5
 
     def shoot(self):
-        myShoot = Shoot()
+        myShoot = Shoot(self.screen)
         myShoot.direction = -1
-        myShoot.x = self.x + math.ceil(self.width / 2)
-        myShoot.y = self.y + math.ceil(myShoot.height / 2)
+        myShoot.x = self.x + math.ceil(self.width / 2) - math.ceil(myShoot.width / 2)
+        myShoot.y = self.y - myShoot.height - 1
+        return myShoot
 

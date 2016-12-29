@@ -1,34 +1,15 @@
 import pygame
-import math
 from game_object import Game_Object
 
-
 class Shoot(Game_Object):
-    def __init__(self):
-        Game_Object.__init__(self,'shoot')
-        self.__sprite = pygame.image.load("imgs/s1.png")
-        self.__width = 10
-        self.__height = 35
-        self.x = math.ceil(self.X_MAX / 2) - math.ceil(self.__width / 2)
-        self.y = self.Y_MAX - self.__height
+    def __init__(self, screen):
+        Game_Object.__init__(self,'shoot', screen)
+        self.sprite = pygame.image.load("imgs/s1.png").convert()
+        self.width, self.height = self.sprite.get_size()
+        self.x = 0
+        self.y = 0
         self.__direction = -1
         self.__speed = 2
-
-    @property
-    def width(self):
-        return self.__width
-
-    @width.setter
-    def width(self,value):
-        self.__width = value
-
-    @property
-    def height(self):
-        return self.__height
-
-    @height.setter
-    def height(self,value):
-        self.__height = value
 
     @property
     def direction(self):
