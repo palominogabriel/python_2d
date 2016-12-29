@@ -11,7 +11,8 @@ class Enemy(Game_Object):
         self.__direction = 270 # From 180 to 360
         self.x = randint(0, self.get_screen_size()[0] - self.width)
         self.y = 0
-
+        self.image = pygame.image.load("imgs/e" + str(randint(1,8)) + ".png").convert()
+        self.rectBox()
     @property
     def speed(self):
         return self.__speed

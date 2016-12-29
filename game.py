@@ -12,6 +12,8 @@ class Game(Game_Object):
         self.__objects_on_screen = list()
         self.objects_on_screen.append(self)
         self.objects_on_screen.append(self.player)
+        self.image = pygame.image.load("imgs/BG.png")
+        self.rect = self.image.get_rect()
 
     @property
     def objects_on_screen(self):
@@ -57,13 +59,13 @@ class Game(Game_Object):
                             for obj2 in self.objects_on_screen:
                                 # Checks if hits an enemy and update score
                                 if obj2.name == 'enemy':
-                                    if obj.sprite.rect(obj, obj2):
+                                    if obj.sprite.collide_rect(obj, obj2):
                                         self.objects_on_screen.remove(obj2)
                                         self.player.score += 10
                                         self.player.remaining_enemies -= 1
                                 # Checks if hits the player and update score and life
                                 if obj2.name == 'player':
-                                    if obj.sprite.rect(obj, obj2):
+                                    if obj.sprite.collide_rect(obj, obj2):
                                         self.player.life -= 1
                                         self.player.score -= 5
 

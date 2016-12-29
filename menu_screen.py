@@ -10,6 +10,8 @@ class Menu_Screen(Game_Object):
         self.__instruction_screen = Instruction_Screen(self.screen)
         self.__game_screen = Game(self.screen)
         self.width, self.height = self.sprite.get_size()
+        self.image = pygame.image.load("imgs/Menu.png").convert()
+        self.rectBox()
 
     @property
     def selection(self):
@@ -78,6 +80,8 @@ class Instruction_Screen(Game_Object):
         Game_Object.__init__(self, 'instruction_screen', screen)
         self.sprite = pygame.image.load("imgs/Instructions.png").convert()
         self.width, self.height = self.sprite.get_size()
+        self.image = pygame.image.load("imgs/Instructions.png").convert()
+        self.rectBox()
 
     def render(self):
         # Clean screen
@@ -105,6 +109,8 @@ class Selection(Game_Object):
         self.__state = self.START
         self.x, self.y = self.get_state_pos(self.state)
         self.width, self.height = self.sprite.get_size()
+        self.image = pygame.image.load("imgs/selection.png")
+        self.rectBox()
 
     # Setters and getters
     @property

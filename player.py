@@ -14,6 +14,8 @@ class Player(Game_Object):
         self.__life = 3
         self.__remaining_enemies = 10
         self.__hit = False
+        self.image = pygame.image.load("imgs/player.png")
+        self.rectBox()
 
     # Getters and setters
     @property

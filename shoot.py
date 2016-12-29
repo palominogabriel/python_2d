@@ -10,6 +10,8 @@ class Shoot(Game_Object):
         self.y = 0
         self.__direction = -1
         self.__speed = 2
+        self.image = pygame.image.load("imgs/s1.png").convert()
+        self.rectBox()
 
     @property
     def direction(self):
