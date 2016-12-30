@@ -1,8 +1,8 @@
-import pygame
+from pygame import display, Rect
 
-class Game_Object(pygame.sprite.Sprite):
-    def __init__(self, name, screen):
-        pygame.sprite.Sprite.__init__(self)
+class Game_Object(Rect):
+    def __init__(self, name, screen, *args, **kwargs):
+        Rect.__init__(self,(0,0),(0,0))
         self.__name = name
         self.__screen = screen
         self.__sprite = None
@@ -42,7 +42,7 @@ class Game_Object(pygame.sprite.Sprite):
 
     @x.setter
     def x(self, value):
-        display_info = pygame.display.Info()
+        display_info = display.Info()
         if value > display_info.current_w:
             self.__x = display_info.current_w
         elif value < 0:
@@ -56,7 +56,7 @@ class Game_Object(pygame.sprite.Sprite):
 
     @y.setter
     def y(self, value):
-        display_info = pygame.display.Info()
+        display_info = display.Info()
         if value > display_info.current_h:
             self.__y = display_info.current_h
         elif value < 0:
@@ -88,7 +88,7 @@ class Game_Object(pygame.sprite.Sprite):
         self.y = y
 
     def get_screen_size(self):
-        display_info = pygame.display.Info()
+        display_info = display.Info()
         return display_info.current_w, display_info.current_h
 
     def rectBox(self):

@@ -12,8 +12,6 @@ class Game(Game_Object):
         self.__objects_on_screen = list()
         self.objects_on_screen.append(self)
         self.objects_on_screen.append(self.player)
-        self.image = pygame.image.load("imgs/BG.png")
-        self.rect = self.image.get_rect()
 
     @property
     def objects_on_screen(self):
@@ -36,8 +34,7 @@ class Game(Game_Object):
         self.screen.fill((0, 0, 0))
         # Draw objects
         for obj in self.objects_on_screen:
-            if obj != None:
-                self.screen.blit(obj.sprite, obj.pos())
+            self.screen.blit(obj.sprite, obj.pos())
         # Update screen
         pygame.display.flip()
 
@@ -46,28 +43,27 @@ class Game(Game_Object):
         while in_game and self.player.life > 0:
             # Updates the shoots positions
             for obj in self.objects_on_screen:
-                if obj != None:
-                    if obj.name == 'shoot':
-                        obj.y += (obj.direction * obj.speed)
-                        # If it is a player shoot and it is at the end of the screen
-                        if obj.y <= 0 - obj.height:
-                            self.objects_on_screen.remove(obj)
-                        # If it is an enemy shoot and it is at the end of the screen
-                        elif obj.y >= obj.get_screen_size()[1]:
-                            self.objects_on_screen.remove(obj)
-                        else:
-                            for obj2 in self.objects_on_screen:
-                                # Checks if hits an enemy and update score
-                                if obj2.name == 'enemy':
-                                    if obj.sprite.collide_rect(obj, obj2):
-                                        self.objects_on_screen.remove(obj2)
-                                        self.player.score += 10
-                                        self.player.remaining_enemies -= 1
-                                # Checks if hits the player and update score and life
-                                if obj2.name == 'player':
-                                    if obj.sprite.collide_rect(obj, obj2):
-                                        self.player.life -= 1
-                                        self.player.score -= 5
+                if obj.name == 'shoot':
+                    obj.y += (obj.direction * obj.speed)
+                    # If it is a player shoot and it is at the end of the screen
+                    if obj.y <= 0:
+                        self.objects_on_screen.remove(obj)
+                    # If it is an enemy shoot and it is at the end of the screen
+                    elif obj.y >= obj.get_screen_size()[1] - obj.height:
+                        self.objects_on_screen.remove(obj)
+                    # Checks shoot collision
+                    for obj2 in self.objects_on_screen:
+                        # Checks if hits an enemy and update score
+                        if obj2.name == 'enemy':
+                            if obj.colliderect(obj2):
+                                self.objects_on_screen.remove(obj2)
+                                self.player.score += 10
+                                self.player.remaining_enemies -= 1
+                        # Checks if hits the player and update score and life
+                        if obj2.name == 'player':
+                            if obj.colliderect(obj2):
+                                self.player.life -= 1
+                                self.player.score -= 5
 
             self.render()
             for event in pygame.event.get():
@@ -79,4 +75,6 @@ class Game(Game_Object):
                     elif event.key == pygame.K_SPACE:
                         self.objects_on_screen.append(self.player.shoot())
 
-
+                # CLOSE WINDOW
+                if event.type == pygame.QUIT:
+                    in_game = False

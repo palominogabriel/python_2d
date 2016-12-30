@@ -14,8 +14,6 @@ class Player(Game_Object):
         self.__life = 3
         self.__remaining_enemies = 10
         self.__hit = False
-        self.image = pygame.image.load("imgs/player.png")
-        self.rectBox()
 
     # Getters and setters
     @property
@@ -65,10 +63,10 @@ class Player(Game_Object):
 
     # Behavior
     def move_left(self):
-        self.x -= 5
+        self.x -= 10
 
     def move_right(self):
-        self.x += 5
+        self.x += 10
 
     def shoot(self):
         myShoot = Shoot(self.screen)

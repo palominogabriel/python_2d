@@ -4,14 +4,12 @@ from game_object import Game_Object
 class Shoot(Game_Object):
     def __init__(self, screen):
         Game_Object.__init__(self,'shoot', screen)
-        self.sprite = pygame.image.load("imgs/s1.png").convert()
+        self.sprite = pygame.image.load("imgs/s1.png")
         self.width, self.height = self.sprite.get_size()
         self.x = 0
         self.y = 0
         self.__direction = -1
         self.__speed = 2
-        self.image = pygame.image.load("imgs/s1.png").convert()
-        self.rectBox()
 
     @property
     def direction(self):
