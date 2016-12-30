@@ -10,6 +10,7 @@ class Player(Game_Object):
         self.width, self.height = self.sprite.get_size()
         self.x = math.ceil(self.get_screen_size()[0] / 2) - math.ceil(self.width / 2)
         self.y = self.get_screen_size()[1] - self.height - 5
+        self.__speed = 0.2
         self.__score = 0
         self.__life = 3
         self.__remaining_enemies = 10
@@ -28,6 +29,14 @@ class Player(Game_Object):
             self.__x = 0
         else:
             self.__x = value
+
+    @property
+    def speed(self):
+        return self.__speed
+
+    @speed.setter
+    def speed(self, value):
+        self.__speed = value
 
     @property
     def score(self):

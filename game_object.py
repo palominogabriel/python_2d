@@ -42,13 +42,7 @@ class Game_Object(Rect):
 
     @x.setter
     def x(self, value):
-        display_info = display.Info()
-        if value > display_info.current_w:
-            self.__x = display_info.current_w
-        elif value < 0:
-            self.__x = 0
-        else:
-            self.__x = value
+        self.__x = value
 
     @property
     def y(self):
@@ -56,13 +50,7 @@ class Game_Object(Rect):
 
     @y.setter
     def y(self, value):
-        display_info = display.Info()
-        if value > display_info.current_h:
-            self.__y = display_info.current_h
-        elif value < 0:
-            self.__y = 0
-        else:
-            self.__y = value
+        self.__y = value
 
     @property
     def width(self):

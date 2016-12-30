@@ -2,6 +2,7 @@ import pygame
 from game_object import Game_Object
 from player import Player
 from enemy import Enemy
+from island import Island
 
 class Game(Game_Object):
     def __init__(self, screen):
@@ -40,30 +41,64 @@ class Game(Game_Object):
 
     def loop(self):
         in_game = True
+        frame_count = 0
+        interval = 0
         while in_game and self.player.life > 0:
-            count = 0
+            # Count game frames
+            frame_count += 1
+
+            # Adds Enemy
+            count_enemies_on_screen = 0
             for obj in self.objects_on_screen:
                 if obj.name == 'enemy':
-                    count += 1
-
-            if count == 0:
+                    count_enemies_on_screen += 1
+            if count_enemies_on_screen == 0:
                 self.objects_on_screen.append(Enemy(self.screen))
 
-            print self.objects_on_screen
+            # Adds Ilands on screen
+            count_islands_on_screen = 0
+            first = True
+            for obj in self.objects_on_screen:
+                if obj.name == 'island':
+                    count_islands_on_screen += 1
+                    # Gets the interval of the first island to determine when to add new islands
+                    if first:
+                        first = False
+                        interval = obj.island_interval
+            # Add island right above the background
+            if count_islands_on_screen < 3 and interval <= 0:
+                head = [self.objects_on_screen[0]]
+                tail = self.objects_on_screen[1:]
+                head.append(Island(self.screen))
+                head.extend(tail)
+                self.objects_on_screen = head
 
+            print self.objects_on_screen
             # Draw objects on screen
             self.render()
 
-            # Updates the shoots positions
+            # Updates the islands
+            for i in range(len(self.objects_on_screen) - 1, 0, -1):
+                if self.objects_on_screen[i].name == 'island':
+                    self.objects_on_screen[i].update_position(self.player.speed)
+                    # Remove the island when hits the end of the screen
+                    if self.objects_on_screen[i].y >= self.objects_on_screen[i].get_screen_size()[1]:
+                        self.objects_on_screen.pop(i)
+
+            # Updates the enemies
             for i in range(len(self.objects_on_screen) - 1, 0, -1):
                 if self.objects_on_screen[i].name == 'enemy':
                     # Updates enemy position on screen
                     self.objects_on_screen[i].update_position()
+                    # Enemy shoots in the interval
+                    if frame_count % self.objects_on_screen[i].shoot_interval == 0:
+                        self.objects_on_screen.append(self.objects_on_screen[i].shoot())
+                        enemy_shoot_count = 0
                     # Remove enemy if hits the end of the screen
                     if self.objects_on_screen[i].y >= self.objects_on_screen[i].get_screen_size()[1] - self.objects_on_screen[i].height:
                         self.objects_on_screen.pop(i)
 
-            # Updates the shoots positions
+            # Updates the shoots
             for i in range(len(self.objects_on_screen)-1,0,-1):
                 if self.objects_on_screen[i].name == 'shoot':
                     # Updates shoot position on screen
