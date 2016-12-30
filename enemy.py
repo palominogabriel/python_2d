@@ -7,14 +7,13 @@ import math
 class Enemy(Game_Object):
     def __init__(self, screen):
         Game_Object.__init__(self,'enemy', screen)
-        self.sprite = pygame.image.load("imgs/e" + str(randint(1,8)) + ".png").convert()
+        self.sprite = pygame.image.load("imgs/e" + str(randint(1,8)) + ".png")
         self.width, self.height = self.sprite.get_size()
         self.__speed = 1
         self.__direction = 1 # From 180 to 360
         self.x = randint(0, self.get_screen_size()[0] - self.width)
         self.y = 0
-        self.image = pygame.image.load("imgs/e" + str(randint(1,8)) + ".png").convert()
-        self.rectBox()
+        self.rect = pygame.Rect(self.pos(), self.sprite.get_size())
     @property
     def speed(self):
         return self.__speed
@@ -40,6 +39,10 @@ class Enemy(Game_Object):
             self.__direction = 1
         else:
             self.__direction = value
+
+    def update_position(self):
+        self.y += (self.direction * self.speed)
+        self.rect = pygame.Rect(self.pos(), self.sprite.get_size())
 
     def shoot(self):
         myShoot = Shoot(self.screen, False)

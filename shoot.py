@@ -10,6 +10,7 @@ class Shoot(Game_Object):
         self.y = 0
         self.__direction = -1
         self.__speed = 2
+        self.rect = pygame.Rect(self.pos(), self.sprite.get_size())
 
     @property
     def direction(self):
@@ -36,3 +37,7 @@ class Shoot(Game_Object):
             self.__speed = 1
         elif value > 1:
             self.__speed = value
+
+    def update_position(self):
+        self.y += (self.direction * self.speed)
+        self.rect = pygame.Rect(self.pos(), self.sprite.get_size())

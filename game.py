@@ -41,17 +41,33 @@ class Game(Game_Object):
     def loop(self):
         in_game = True
         while in_game and self.player.life > 0:
-            if not self.objects_on_screen.__contains__(Enemy(self.screen)):
+            count = 0
+            for obj in self.objects_on_screen:
+                if obj.name == 'enemy':
+                    count += 1
+
+            if count == 0:
                 self.objects_on_screen.append(Enemy(self.screen))
+
+            print self.objects_on_screen
 
             # Draw objects on screen
             self.render()
 
             # Updates the shoots positions
+            for i in range(len(self.objects_on_screen) - 1, 0, -1):
+                if self.objects_on_screen[i].name == 'enemy':
+                    # Updates enemy position on screen
+                    self.objects_on_screen[i].update_position()
+                    # Remove enemy if hits the end of the screen
+                    if self.objects_on_screen[i].y >= self.objects_on_screen[i].get_screen_size()[1] - self.objects_on_screen[i].height:
+                        self.objects_on_screen.pop(i)
+
+            # Updates the shoots positions
             for i in range(len(self.objects_on_screen)-1,0,-1):
                 if self.objects_on_screen[i].name == 'shoot':
                     # Updates shoot position on screen
-                    self.objects_on_screen[i].y += (self.objects_on_screen[i].direction * self.objects_on_screen[i].speed)
+                    self.objects_on_screen[i].update_position()
 
                     # Checks shoot collision
                     for j in range(len(self.objects_on_screen) - 1, 0, -1):
