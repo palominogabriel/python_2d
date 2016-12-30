@@ -9,17 +9,17 @@ class Game(Game_Object):
         self.sprite = pygame.image.load("imgs/BG.png").convert()
         self.__font = pygame.font.SysFont("monospace", 15)
         self.__player = Player(self.screen)
-        self.__objects_on_screen = list()
+        self.objects_on_screen = list()
         self.objects_on_screen.append(self)
         self.objects_on_screen.append(self.player)
 
-    @property
-    def objects_on_screen(self):
-        return self.__objects_on_screen
+    #@property
+    #def objects_on_screen(self):
+    #    return self.__objects_on_screen
 
-    @objects_on_screen.setter
-    def objects_on_screen(self, value):
-        self.__objects_on_screen = value
+    #@objects_on_screen.setter
+    #def objects_on_screen(self, value):
+    #    self.__objects_on_screen = value
 
     @property
     def player(self):
@@ -41,31 +41,41 @@ class Game(Game_Object):
     def loop(self):
         in_game = True
         while in_game and self.player.life > 0:
+            if not self.objects_on_screen.__contains__(Enemy(self.screen)):
+                self.objects_on_screen.append(Enemy(self.screen))
+
+            # Draw objects on screen
+            self.render()
+
             # Updates the shoots positions
-            for obj in self.objects_on_screen:
-                if obj.name == 'shoot':
-                    obj.y += (obj.direction * obj.speed)
-                    # If it is a player shoot and it is at the end of the screen
-                    if obj.y <= 0:
-                        self.objects_on_screen.remove(obj)
-                    # If it is an enemy shoot and it is at the end of the screen
-                    elif obj.y >= obj.get_screen_size()[1] - obj.height:
-                        self.objects_on_screen.remove(obj)
+            for i in range(len(self.objects_on_screen)-1,0,-1):
+                if self.objects_on_screen[i].name == 'shoot':
+                    # Updates shoot position on screen
+                    self.objects_on_screen[i].y += (self.objects_on_screen[i].direction * self.objects_on_screen[i].speed)
+
                     # Checks shoot collision
-                    for obj2 in self.objects_on_screen:
+                    for j in range(len(self.objects_on_screen) - 1, 0, -1):
                         # Checks if hits an enemy and update score
-                        if obj2.name == 'enemy':
-                            if obj.colliderect(obj2):
-                                self.objects_on_screen.remove(obj2)
+                        if self.objects_on_screen[j].name == 'enemy':
+                            if self.objects_on_screen[i].colliderect(self.objects_on_screen[j]):
+                                self.objects_on_screen.pop(j)
                                 self.player.score += 10
                                 self.player.remaining_enemies -= 1
                         # Checks if hits the player and update score and life
-                        if obj2.name == 'player':
-                            if obj.colliderect(obj2):
+                        if self.objects_on_screen[j].name == 'player':
+                            if self.objects_on_screen[i].colliderect(self.objects_on_screen[j]):
                                 self.player.life -= 1
                                 self.player.score -= 5
 
-            self.render()
+                    # If it is a player shoot and it is at the end of the screen
+                    if self.objects_on_screen[i].y <= 0:
+                        self.objects_on_screen.pop(i)
+                    # If it is an enemy shoot and it is at the end of the screen
+                    elif self.objects_on_screen[i].y >= self.objects_on_screen[i].get_screen_size()[1] - self.objects_on_screen[i].height:
+                        self.objects_on_screen.pop(i)
+
+
+
             for event in pygame.event.get():
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:

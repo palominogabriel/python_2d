@@ -2,9 +2,9 @@ import pygame
 from game_object import Game_Object
 
 class Shoot(Game_Object):
-    def __init__(self, screen):
+    def __init__(self, screen, player=True):
         Game_Object.__init__(self,'shoot', screen)
-        self.sprite = pygame.image.load("imgs/s1.png")
+        self.sprite = (pygame.image.load("imgs/s1.png") if player else pygame.image.load("imgs/s2.png"))
         self.width, self.height = self.sprite.get_size()
         self.x = 0
         self.y = 0

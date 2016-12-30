@@ -1,7 +1,7 @@
 from pygame import display, Rect
 
 class Game_Object(Rect):
-    def __init__(self, name, screen, *args, **kwargs):
+    def __init__(self, name, screen):
         Rect.__init__(self,(0,0),(0,0))
         self.__name = name
         self.__screen = screen

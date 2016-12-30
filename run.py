@@ -4,7 +4,7 @@ from menu_screen import Menu_Screen
 # Initiates the pygame lib
 pygame.init()
 
-# Set the window resolution
+# Set the win dow resolution
 screen = pygame.display.set_mode((640, 704))
 
 # Set the mouse invisible
