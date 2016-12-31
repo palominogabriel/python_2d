@@ -9,7 +9,7 @@ class Shoot(Game_Object):
         self.x = 0
         self.y = 0
         self.__direction = -1
-        self.__speed = 2
+        self.__speed = 20
         self.rect = pygame.Rect(self.pos(), self.sprite.get_size())
 
     @property

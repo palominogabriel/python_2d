@@ -30,6 +30,8 @@ class Player(Game_Object):
         else:
             self.__x = value
 
+
+
     @property
     def speed(self):
         return self.__speed
@@ -74,8 +76,10 @@ class Player(Game_Object):
     def move_left(self):
         self.x -= 10
 
+
     def move_right(self):
         self.x += 10
+
 
     def shoot(self):
         myShoot = Shoot(self.screen)
@@ -84,3 +88,11 @@ class Player(Game_Object):
         myShoot.y = self.y - myShoot.height - 1
         return myShoot
 
+
+    # continuous player movement while holding down the move keys
+    def handle_move(self):
+        key = pygame.key.get_pressed()
+        if key[pygame.K_RIGHT]:
+            self.move_right()
+        if key[pygame.K_LEFT]:
+            self.move_left()

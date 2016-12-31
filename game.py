@@ -129,13 +129,12 @@ class Game(Game_Object):
 
             for event in pygame.event.get():
                 if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_LEFT:
-                        self.player.move_left()
-                    elif event.key == pygame.K_RIGHT:
-                        self.player.move_right()
-                    elif event.key == pygame.K_SPACE:
+                    if event.key == pygame.K_SPACE:
                         self.objects_on_screen.append(self.player.shoot())
+
 
                 # CLOSE WINDOW
                 if event.type == pygame.QUIT:
                     in_game = False
+
+            self.player.handle_move()
