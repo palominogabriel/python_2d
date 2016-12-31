@@ -4,6 +4,21 @@ from player import Player
 from enemy import Enemy
 from island import Island
 
+
+
+def detectCollision(obj1, obj2):
+    if (obj1.x + obj1.width >= obj2.x >= obj1.x and obj1.y+obj1.height >= obj2.y >= obj1.y or obj2.x + obj2.width >= obj1.x >= obj2.x and obj2.y+obj2.height >= obj1.y >= obj2.y):
+        return True
+    elif (obj1.x + obj1.width >= obj2.x + obj2.width >= obj1.x and obj1.y+obj1.height >= obj2.y >= obj1.y or obj2.x + obj2.width >= obj1.x + obj1.width >= obj2.x and obj2.y+obj2.height >= obj1.y >= obj2.y):
+        return True
+    elif (obj1.x + obj1.width >= obj2.x >= obj1.x and obj1.y+obj1.height >= obj2.y + obj2.height >= obj1.y or obj2.x + obj2.width >= obj1.x >= obj2.x and obj2.y+obj2.height >= obj1.y + obj1.height >= obj2.y):
+        return True
+    elif (obj1.x + obj1.width >= obj2.x + obj2.width >= obj1.x and obj1.y+obj1.height >= obj2.y + obj2.height >= obj1.y or obj2.x + obj2.width >= obj1.x + obj1.width >= obj2.x and obj2.y+obj2.height >= obj1.y + obj1.height >= obj2.y):
+        return True
+    else:
+        return False
+
+
 class Game(Game_Object):
     def __init__(self, screen):
         Game_Object.__init__(self,'game_screen',screen)
@@ -108,13 +123,15 @@ class Game(Game_Object):
                     for j in range(len(self.objects_on_screen) - 1, 0, -1):
                         # Checks if hits an enemy and update score
                         if self.objects_on_screen[j].name == 'enemy':
-                            if self.objects_on_screen[i].colliderect(self.objects_on_screen[j]):
+                            #if self.objects_on_screen[i].colliderect(self.objects_on_screen[j]):
+                            if detectCollision(self.objects_on_screen[i], self.objects_on_screen[j]):
                                 self.objects_on_screen.pop(j)
                                 self.player.score += 10
                                 self.player.remaining_enemies -= 1
                         # Checks if hits the player and update score and life
                         if self.objects_on_screen[j].name == 'player':
-                            if self.objects_on_screen[i].colliderect(self.objects_on_screen[j]):
+                            #if self.objects_on_screen[i].colliderect(self.objects_on_screen[j]):
+                            if detectCollision(self.objects_on_screen[i], self.objects_on_screen[j]):
                                 self.player.life -= 1
                                 self.player.score -= 5
 
