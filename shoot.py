@@ -1,6 +1,23 @@
 import pygame
 from game_object import Game_Object
 
+
+def detectCollision(obj1, obj2):
+    if (
+                        obj1.x + obj1.width >= obj2.x >= obj1.x and obj1.y + obj1.height >= obj2.y >= obj1.y or obj2.x + obj2.width >= obj1.x >= obj2.x and obj2.y + obj2.height >= obj1.y >= obj2.y):
+        return True
+    elif (
+                        obj1.x + obj1.width >= obj2.x + obj2.width >= obj1.x and obj1.y + obj1.height >= obj2.y >= obj1.y or obj2.x + obj2.width >= obj1.x + obj1.width >= obj2.x and obj2.y + obj2.height >= obj1.y >= obj2.y):
+        return True
+    elif (
+                        obj1.x + obj1.width >= obj2.x >= obj1.x and obj1.y + obj1.height >= obj2.y + obj2.height >= obj1.y or obj2.x + obj2.width >= obj1.x >= obj2.x and obj2.y + obj2.height >= obj1.y + obj1.height >= obj2.y):
+        return True
+    elif (
+                        obj1.x + obj1.width >= obj2.x + obj2.width >= obj1.x and obj1.y + obj1.height >= obj2.y + obj2.height >= obj1.y or obj2.x + obj2.width >= obj1.x + obj1.width >= obj2.x and obj2.y + obj2.height >= obj1.y + obj1.height >= obj2.y):
+        return True
+    else:
+        return False
+
 class Shoot(Game_Object):
     def __init__(self, screen, player=True):
         Game_Object.__init__(self,'shoot', screen)
@@ -40,4 +57,33 @@ class Shoot(Game_Object):
 
     def update_position(self):
         self.y += (self.direction * self.speed)
-        self.rect = pygame.Rect(self.pos(), self.sprite.get_size())
+        '''
+        # If it is a player shoot and it is at the end of the screen
+        if self.y <= 0:
+            objects_on_screen.remove(self)
+        # If it is an enemy shoot and it is at the end of the screen
+        elif self.y >= self.get_screen_size()[1] - self.height:
+            objects_on_screen.remove(self)
+
+        for i in range(len(objects_on_screen) - 1, 0, -1):
+            collided = False
+            try:
+                if objects_on_screen[i].name == 'enemy':
+                    if detectCollision(self, objects_on_screen[i]):
+                        collided = True
+                        player.score += 10
+                        player.remaining_enemies -= 1
+                        objects_on_screen.pop(i)
+                elif objects_on_screen[i].name == 'player':
+                    if detectCollision(self, objects_on_screen[i]):
+                        collided = True
+                        player.life -= 1
+                        player.score -= 5
+                        if player.life <= 0:
+                            objects_on_screen.pop(i)
+
+                if collided:
+                    objects_on_screen.remove(self)
+            except(IndexError):
+                break
+        '''

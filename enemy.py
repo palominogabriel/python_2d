@@ -10,10 +10,10 @@ class Enemy(Game_Object):
         self.sprite = pygame.image.load("imgs/e" + str(randint(1,8)) + ".png")
         self.width, self.height = self.sprite.get_size()
         self.__speed = 0.5
-        self.__direction = 1 # From 180 to 360
-        self.__shoot_interval = 120
+        self.__direction = 1
+        self.__shoot_interval = 180
         self.x = randint(0, self.get_screen_size()[0] - self.width)
-        self.y = 0
+        self.y = -self.height
         self.rect = pygame.Rect(self.pos(), self.sprite.get_size())
 
     @property

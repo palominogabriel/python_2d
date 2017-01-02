@@ -6,15 +6,15 @@ from game_object import Game_Object
 class Player(Game_Object):
     def __init__(self, screen):
         Game_Object.__init__(self,'player',screen)
-        self.sprite = pygame.image.load("imgs/player.png")
+        self.sprite = pygame.image.load("imgs/player2.png")
         self.width, self.height = self.sprite.get_size()
         self.x = math.ceil(self.get_screen_size()[0] / 2) - math.ceil(self.width / 2)
-        self.y = self.get_screen_size()[1] - self.height - 5
+        self.y = self.get_screen_size()[1] - self.height - 35
         self.__speed = 0.2
         self.__score = 0
         self.__life = 3
         self.__remaining_enemies = 10
-        self.__hit = False
+        self.__phase = 1
 
     # Getters and setters
     @property
@@ -65,20 +65,20 @@ class Player(Game_Object):
         self.__remaining_enemies = value
 
     @property
-    def hit(self):
-        return self.__hit
+    def phase(self):
+        return self.__phase
 
-    @hit.setter
-    def hit(self, value):
-        self.__hit = value
+    @phase.setter
+    def phase(self, value):
+        self.__phase = value
 
     # Behavior
     def move_left(self):
-        self.x -= 10
+        self.x -= 3
 
 
     def move_right(self):
-        self.x += 10
+        self.x += 3
 
 
     def shoot(self):
