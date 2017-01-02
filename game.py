@@ -25,18 +25,18 @@ class Game(Game_Object):
     def __init__(self, screen):
         Game_Object.__init__(self,'game_screen',screen)
         self.sprite = pygame.image.load("imgs/BG.png").convert()
-        self.__font = pygame.font.SysFont("monospace", 15)
+        self.__font_score = pygame.font.SysFont("monospace", 15)
         self.__player = Player(self.screen)
         self.__objects_on_screen = None
 
     # Getters and Setter
     @property
-    def font(self):
-        return self.__font
+    def font_score(self):
+        return self.__font_score
 
-    @font.setter
-    def font(self, value):
-        self.__font = value
+    @font_score.setter
+    def font_score(self, value):
+        self.__font_score = value
 
     @property
     def player(self):
@@ -55,6 +55,7 @@ class Game(Game_Object):
         self.__objects_on_screen = value
 
     def render(self):
+
         # Clean screen
         self.screen.fill((0, 0, 0))
         # Draw objects
@@ -62,6 +63,12 @@ class Game(Game_Object):
             self.screen.blit(obj.sprite, obj.pos())
 
         # self.render(str('TESTE'), 1, (255, 255, 255), (0, 0, 0))
+
+
+        #Render Score
+        label = self.font_score.render("Score: " + str(self.player.score), 1, (255, 255, 0))
+        self.screen.blit(label, (10, self.get_screen_size()[1]-20))
+
         # Update screen
         pygame.display.flip()
 
@@ -74,6 +81,10 @@ class Game(Game_Object):
         frame_count = 0
         interval = 0
         while in_game and self.player.life > 0:
+
+
+
+
             # Count game frames
             frame_count += 1
 

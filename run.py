@@ -3,7 +3,6 @@ from menu_screen import Menu_Screen
 
 # Initiates the pygame lib
 pygame.init()
-
 # Set the window resolution
 screen = pygame.display.set_mode((640, 704))
 

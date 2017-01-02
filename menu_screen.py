@@ -2,6 +2,7 @@ import pygame
 from game_object import Game_Object
 from game import Game
 
+
 class Menu_Screen(Game_Object):
     def __init__(self, screen):
         Game_Object.__init__(self, 'menu_screen', screen)
