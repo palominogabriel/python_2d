@@ -120,7 +120,7 @@ class Game(Game_Object):
                 head.extend(tail)
                 self.objects_on_screen = head
 
-            print self.objects_on_screen
+            # print self.objects_on_screen
             # Draw objects on screen
             self.render()
 

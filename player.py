@@ -6,7 +6,7 @@ from game_object import Game_Object
 class Player(Game_Object):
     def __init__(self, screen):
         Game_Object.__init__(self,'player',screen)
-        self.sprite = pygame.image.load("imgs/player2.png")
+        self.sprite = pygame.image.load("imgs/player.png")
         self.width, self.height = self.sprite.get_size()
         self.x = math.ceil(self.get_screen_size()[0] / 2) - math.ceil(self.width / 2)
         self.y = self.get_screen_size()[1] - self.height - 35
