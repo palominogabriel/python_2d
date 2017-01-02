@@ -5,19 +5,21 @@ from enemy import Enemy
 from island import Island
 
 
-
 def detectCollision(obj1, obj2):
-    if (obj1.x + obj1.width >= obj2.x >= obj1.x and obj1.y+obj1.height >= obj2.y >= obj1.y or obj2.x + obj2.width >= obj1.x >= obj2.x and obj2.y+obj2.height >= obj1.y >= obj2.y):
+    if (
+                        obj1.x + obj1.width >= obj2.x >= obj1.x and obj1.y + obj1.height >= obj2.y >= obj1.y or obj2.x + obj2.width >= obj1.x >= obj2.x and obj2.y + obj2.height >= obj1.y >= obj2.y):
         return True
-    elif (obj1.x + obj1.width >= obj2.x + obj2.width >= obj1.x and obj1.y+obj1.height >= obj2.y >= obj1.y or obj2.x + obj2.width >= obj1.x + obj1.width >= obj2.x and obj2.y+obj2.height >= obj1.y >= obj2.y):
+    elif (
+                        obj1.x + obj1.width >= obj2.x + obj2.width >= obj1.x and obj1.y + obj1.height >= obj2.y >= obj1.y or obj2.x + obj2.width >= obj1.x + obj1.width >= obj2.x and obj2.y + obj2.height >= obj1.y >= obj2.y):
         return True
-    elif (obj1.x + obj1.width >= obj2.x >= obj1.x and obj1.y+obj1.height >= obj2.y + obj2.height >= obj1.y or obj2.x + obj2.width >= obj1.x >= obj2.x and obj2.y+obj2.height >= obj1.y + obj1.height >= obj2.y):
+    elif (
+                        obj1.x + obj1.width >= obj2.x >= obj1.x and obj1.y + obj1.height >= obj2.y + obj2.height >= obj1.y or obj2.x + obj2.width >= obj1.x >= obj2.x and obj2.y + obj2.height >= obj1.y + obj1.height >= obj2.y):
         return True
-    elif (obj1.x + obj1.width >= obj2.x + obj2.width >= obj1.x and obj1.y+obj1.height >= obj2.y + obj2.height >= obj1.y or obj2.x + obj2.width >= obj1.x + obj1.width >= obj2.x and obj2.y+obj2.height >= obj1.y + obj1.height >= obj2.y):
+    elif (
+                        obj1.x + obj1.width >= obj2.x + obj2.width >= obj1.x and obj1.y + obj1.height >= obj2.y + obj2.height >= obj1.y or obj2.x + obj2.width >= obj1.x + obj1.width >= obj2.x and obj2.y + obj2.height >= obj1.y + obj1.height >= obj2.y):
         return True
     else:
         return False
-
 
 class Game(Game_Object):
     def __init__(self, screen):
@@ -25,17 +27,16 @@ class Game(Game_Object):
         self.sprite = pygame.image.load("imgs/BG.png").convert()
         self.__font = pygame.font.SysFont("monospace", 15)
         self.__player = Player(self.screen)
-        self.objects_on_screen = list()
-        self.objects_on_screen.append(self)
-        self.objects_on_screen.append(self.player)
+        self.__objects_on_screen = None
 
-    #@property
-    #def objects_on_screen(self):
-    #    return self.__objects_on_screen
+    # Getters and Setter
+    @property
+    def font(self):
+        return self.__font
 
-    #@objects_on_screen.setter
-    #def objects_on_screen(self, value):
-    #    self.__objects_on_screen = value
+    @font.setter
+    def font(self, value):
+        self.__font = value
 
     @property
     def player(self):
@@ -45,16 +46,30 @@ class Game(Game_Object):
     def player(self, value):
         self.__player = value
 
+    @property
+    def objects_on_screen(self):
+        return self.__objects_on_screen
+
+    @objects_on_screen.setter
+    def objects_on_screen(self, value):
+        self.__objects_on_screen = value
+
     def render(self):
         # Clean screen
         self.screen.fill((0, 0, 0))
         # Draw objects
         for obj in self.objects_on_screen:
             self.screen.blit(obj.sprite, obj.pos())
+
+        # self.render(str('TESTE'), 1, (255, 255, 255), (0, 0, 0))
         # Update screen
         pygame.display.flip()
 
     def loop(self):
+        self.objects_on_screen = list()
+        self.objects_on_screen.append(self)
+        self.objects_on_screen.append(self.player)
+        self.player.life = 3
         in_game = True
         frame_count = 0
         interval = 0
@@ -80,6 +95,7 @@ class Game(Game_Object):
                     if first:
                         first = False
                         interval = obj.island_interval
+
             # Add island right above the background
             if count_islands_on_screen < 3 and interval <= 0:
                 head = [self.objects_on_screen[0]]
@@ -125,6 +141,7 @@ class Game(Game_Object):
                         if self.objects_on_screen[j].name == 'enemy':
                             #if self.objects_on_screen[i].colliderect(self.objects_on_screen[j]):
                             if detectCollision(self.objects_on_screen[i], self.objects_on_screen[j]):
+                                self.objects_on_screen.pop(i)
                                 self.objects_on_screen.pop(j)
                                 self.player.score += 10
                                 self.player.remaining_enemies -= 1
@@ -132,6 +149,7 @@ class Game(Game_Object):
                         if self.objects_on_screen[j].name == 'player':
                             #if self.objects_on_screen[i].colliderect(self.objects_on_screen[j]):
                             if detectCollision(self.objects_on_screen[i], self.objects_on_screen[j]):
+                                self.objects_on_screen.pop(i)
                                 self.player.life -= 1
                                 self.player.score -= 5
 
@@ -141,17 +159,18 @@ class Game(Game_Object):
                     # If it is an enemy shoot and it is at the end of the screen
                     elif self.objects_on_screen[i].y >= self.objects_on_screen[i].get_screen_size()[1] - self.objects_on_screen[i].height:
                         self.objects_on_screen.pop(i)
+            # Player movement
+            self.player.handle_move()
 
-
-
+            # Player shoot
             for event in pygame.event.get():
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_SPACE:
                         self.objects_on_screen.append(self.player.shoot())
 
-
                 # CLOSE WINDOW
                 if event.type == pygame.QUIT:
-                    in_game = False
+                    return False  # Window closed
 
-            self.player.handle_move()
+        # Window not closed
+        return True

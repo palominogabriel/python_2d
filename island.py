@@ -39,6 +39,6 @@ class Island(Game_Object):
 
     def update_position(self, player_speed):
         if self.island_interval <= 0:
-            self.island_interval = 500
+            self.island_interval = 1000
         self.island_interval -= 1
         self.y += (self.direction * player_speed)
