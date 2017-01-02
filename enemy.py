@@ -14,7 +14,6 @@ class Enemy(Game_Object):
         self.__shoot_interval = 180
         self.x = randint(0, self.get_screen_size()[0] - self.width)
         self.y = -self.height
-        self.rect = pygame.Rect(self.pos(), self.sprite.get_size())
 
     @property
     def speed(self):

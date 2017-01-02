@@ -1,7 +1,6 @@
 import pygame
 from game_object import Game_Object
 
-
 def detectCollision(obj1, obj2):
     if (
                         obj1.x + obj1.width >= obj2.x >= obj1.x and obj1.y + obj1.height >= obj2.y >= obj1.y or obj2.x + obj2.width >= obj1.x >= obj2.x and obj2.y + obj2.height >= obj1.y >= obj2.y):
@@ -27,7 +26,6 @@ class Shoot(Game_Object):
         self.y = 0
         self.__direction = -1
         self.__speed = 2
-        self.rect = pygame.Rect(self.pos(), self.sprite.get_size())
 
     @property
     def direction(self):

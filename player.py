@@ -23,14 +23,12 @@ class Player(Game_Object):
 
     @x.setter
     def x(self,value):
-        if value > self.get_screen_size()[0] - self.width:
-            self.__x = self.get_screen_size()[0] - self.width
-        elif value < 0:
-            self.__x = 0
+        if value > self.get_screen_size()[0] - math.ceil(self.width / 2):
+            self.__x = self.get_screen_size()[0] - math.ceil(self.width / 2)
+        elif value < -math.ceil(self.width / 2):
+            self.__x = -math.ceil(self.width / 2)
         else:
             self.__x = value
-
-
 
     @property
     def speed(self):

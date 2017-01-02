@@ -1,6 +1,7 @@
 import pygame
 from game_object import Game_Object
 from game import Game
+import math
 
 
 class Menu_Screen(Game_Object):
@@ -10,8 +11,8 @@ class Menu_Screen(Game_Object):
         self.__selection = Selection(self.screen)
         self.__instruction_screen = Instruction_Screen(self.screen)
         self.__game_screen = Game(self.screen)
+        self.__game_over_screen = Game_Over_Screen(self.screen)
         self.width, self.height = self.sprite.get_size()
-        self.rectBox()
 
     @property
     def selection(self):
@@ -37,6 +38,14 @@ class Menu_Screen(Game_Object):
     def game_screen(self, value):
         self.__game_screen = value
 
+    @property
+    def game_over_screen(self):
+        return self.__game_over_screen
+
+    @game_over_screen.setter
+    def game_over_screen(self, value):
+        self.__game_over_screen = value
+
     def render(self):
         # Clean screen
         self.screen.fill((0, 0, 0))
@@ -60,11 +69,15 @@ class Menu_Screen(Game_Object):
                     if event.key == pygame.K_RETURN:
                         if self.selection.state == self.selection.START:
                             # Start the game
-                            in_menu = self.game_screen.loop()
+                            in_menu, score = self.game_screen.loop()
+                            # Game Over
+                            if in_menu:
+                                self.game_over_screen.render(score)
+                                in_menu = self.game_over_screen.loop()
                         elif self.selection.state == self.selection.INSTRUCTION:
                             # Load the instruction Screen
                             self.instruction_screen.render()
-                            self.instruction_screen.loop()
+                            in_menu = self.instruction_screen.loop()
                         elif self.selection.state == self.selection.EXIT:
                             # Exit game
                             in_menu = False
@@ -73,13 +86,11 @@ class Menu_Screen(Game_Object):
                 if event.type == pygame.QUIT:
                     in_menu = False
 
-
 class Instruction_Screen(Game_Object):
     def __init__(self, screen):
         Game_Object.__init__(self, 'instruction_screen', screen)
         self.sprite = pygame.image.load("imgs/Instructions.png").convert()
         self.width, self.height = self.sprite.get_size()
-        self.rectBox()
 
     def render(self):
         # Clean screen
@@ -91,11 +102,52 @@ class Instruction_Screen(Game_Object):
 
     def loop(self):
         in_instruction = True
+        window_open = True
         while in_instruction:
             for event in pygame.event.get():
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_RETURN:
                         in_instruction = False
+                # CLOSE WINDOW
+                if event.type == pygame.QUIT:
+                    window_open = False
+                    in_instruction = False
+        return window_open
+
+
+class Game_Over_Screen(Game_Object):
+    def __init__(self, screen):
+        Game_Object.__init__(self, 'game_over_screen', screen)
+        self.sprite = pygame.image.load("imgs/Game_Over.png").convert()
+        self.width, self.height = self.sprite.get_size()
+        self.__font = pygame.font.SysFont("Arial Black", 60)
+
+    def render(self, score):
+        # Clean screen
+        self.screen.fill((0, 0, 0))
+        # Draw background
+        self.screen.blit(self.sprite, self.pos())
+        # Draw Score
+        label = self.__font.render(str(score), 1, (0, 0, 0))
+        self.screen.blit(label, (math.ceil(self.get_screen_size()[0] / 2) - math.ceil(label.get_size()[0] / 2),
+                                 math.ceil(self.get_screen_size()[1] / 2) - 100))
+        # Update screen
+        pygame.display.flip()
+
+    def loop(self):
+        in_game_over = True
+        window_open = True
+        while in_game_over:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_RETURN:
+                        in_game_over = False
+                # CLOSE WINDOW
+                if event.type == pygame.QUIT:
+                    window_open = False
+                    in_game_over = False
+        return window_open
+
 
 class Selection(Game_Object):
     def __init__(self, screen):
@@ -107,7 +159,6 @@ class Selection(Game_Object):
         self.__state = self.START
         self.x, self.y = self.get_state_pos(self.state)
         self.width, self.height = self.sprite.get_size()
-        self.rectBox()
 
     # Setters and getters
     @property

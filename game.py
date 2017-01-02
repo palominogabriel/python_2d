@@ -190,7 +190,7 @@ class Game(Game_Object):
 
                 # CLOSE WINDOW
                 if event.type == pygame.QUIT:
-                    return False  # Window closed
+                    return False, self.player.score  # Window closed
 
         # Window not closed
-        return True
+        return True, self.player.score
