@@ -193,9 +193,8 @@ class Game(Game_Object):
                     # Enemy shoots in the interval
                     if frame_count % self.objects_on_screen[i].shoot_interval == 0:
                         self.objects_on_screen.append(self.objects_on_screen[i].shoot())
-                        enemy_shoot_count = 0
                     # Remove enemy if hits the end of the screen
-                    if self.objects_on_screen[i].y >= self.objects_on_screen[i].get_screen_size()[1] - self.objects_on_screen[i].height:
+                    if self.objects_on_screen[i].y >= self.objects_on_screen[i].get_screen_size()[1]:
                         to_remove.append(i)
                 # UPDATE ISLANDS
                 if self.objects_on_screen[i].name == 'island':
