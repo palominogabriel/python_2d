@@ -9,7 +9,7 @@ class Island(Game_Object):
         self.sprite = pygame.image.load("imgs/i" + str(randint(1, 5)) + ".png")
         self.width, self.height = self.sprite.get_size()
         self.__direction = 1
-        self.__island_interval = 1000
+        self.__island_interval = 2000
         self.x = randint(0, self.get_screen_size()[0] - self.width)
         self.y = -self.height
 
@@ -38,6 +38,6 @@ class Island(Game_Object):
 
     def update_position(self, player_speed):
         if self.island_interval <= 0:
-            self.island_interval = 1000
+            self.island_interval = 2000
         self.island_interval -= 1
         self.y += (self.direction * player_speed)

@@ -11,7 +11,7 @@ class Enemy(Game_Object):
         self.width, self.height = self.sprite.get_size()
         self.__speed = 0.5
         self.__direction = 1
-        self.__shoot_interval = 180
+        self.__shoot_interval = 250
         self.x = randint(0, self.get_screen_size()[0] - self.width)
         self.y = -self.height
 

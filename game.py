@@ -79,6 +79,14 @@ class Game(Game_Object):
         # Update screen
         pygame.display.flip()
 
+    def print_phase(self):
+        font = pygame.font.SysFont("Arial Black", 40)
+        label = font.render("PHASE " + str(self.player.phase), 1, (255, 138, 0))
+        self.screen.blit(label, (math.ceil(self.get_screen_size()[0] / 2) - math.ceil(label.get_size()[0] / 2),
+                                 math.ceil(self.get_screen_size()[1] / 2) - math.ceil(label.get_size()[1] / 2)))
+        # Update screen
+        pygame.display.flip()
+
     def pause_render(self):
         # Create the pause surface
         p_screen = pygame.Surface(self.get_screen_size())
@@ -126,11 +134,22 @@ class Game(Game_Object):
         self.objects_on_screen.append(self.player)
         self.player.life = 3
         self.player.score = 0
+        self.player.phase = 1
         self.player.remaining_enemies = 10 * self.player.phase
         in_game = True
+        phase_changed = True
         frame_count = 0
         interval = 0
+        phase_blink = 0
         while in_game and self.player.life > 0:
+            # Phase blink
+            if phase_blink < 500 and phase_changed:
+                self.print_phase()
+                phase_blink += 1
+            elif phase_blink >= 500 and phase_changed:
+                phase_changed = False
+                phase_blink = 0
+
             to_remove = list()
             # Count game frames
             frame_count += 1
@@ -140,7 +159,7 @@ class Game(Game_Object):
             for obj in self.objects_on_screen:
                 if obj.name == 'enemy':
                     count_enemies_on_screen += 1
-            if count_enemies_on_screen == 0:
+            if count_enemies_on_screen < self.player.phase % 4:
                 self.objects_on_screen.append(Enemy(self.screen))
 
             # Adds Ilands on screen
@@ -162,20 +181,12 @@ class Game(Game_Object):
                 head.extend(tail)
                 self.objects_on_screen = head
 
-            # print self.objects_on_screen
             # Draw objects on screen
             self.render()
 
-            # Updates the islands
+            # Update objects positions
             for i in range(len(self.objects_on_screen) - 1, 0, -1):
-                if self.objects_on_screen[i].name == 'island':
-                    self.objects_on_screen[i].update_position(self.player.speed)
-                    # Remove the island when hits the end of the screen
-                    if self.objects_on_screen[i].y >= self.objects_on_screen[i].get_screen_size()[1]:
-                        self.objects_on_screen.pop(i)
-
-            # Updates the enemies
-            for i in range(len(self.objects_on_screen) - 1, 0, -1):
+                # UPDATE ENEMIES
                 if self.objects_on_screen[i].name == 'enemy':
                     # Updates enemy position on screen
                     self.objects_on_screen[i].update_position()
@@ -185,12 +196,20 @@ class Game(Game_Object):
                         enemy_shoot_count = 0
                     # Remove enemy if hits the end of the screen
                     if self.objects_on_screen[i].y >= self.objects_on_screen[i].get_screen_size()[1] - self.objects_on_screen[i].height:
-                        self.objects_on_screen.pop(i)
-
-            # Update shoots and check collisions
-            for i in range(len(self.objects_on_screen) - 1, 0, -1):
+                        to_remove.append(i)
+                # UPDATE ISLANDS
+                if self.objects_on_screen[i].name == 'island':
+                    self.objects_on_screen[i].update_position(self.player.speed)
+                    # Remove the island when hits the end of the screen
+                    if self.objects_on_screen[i].y >= self.objects_on_screen[i].get_screen_size()[1]:
+                        to_remove.append(i)
+                # UPDATE SHOOTS
                 if self.objects_on_screen[i].name == 'shoot':
                     self.objects_on_screen[i].update_position()
+
+            # Collisions check
+            for i in range(len(self.objects_on_screen) - 1, 0, -1):
+                if self.objects_on_screen[i].name == 'shoot':
                     # Checks shoot collision
                     for j in range(len(self.objects_on_screen) - 1, 0, -1):
                         # Checks if hits an enemy and update score
@@ -198,14 +217,18 @@ class Game(Game_Object):
                             if detectCollision(self.objects_on_screen[i], self.objects_on_screen[j]):
                                 to_remove.append(i)
                                 to_remove.append(j)
-                                self.player.score += 10
+                                self.player.score += 10 * self.player.phase
                                 self.player.remaining_enemies -= 1
+                                if self.player.remaining_enemies <= 0:
+                                    self.player.phase += 1
+                                    phase_changed = True
+                                    self.player.remaining_enemies = self.player.phase * 10
                         # Checks if hits the player and update score and life
                         elif self.objects_on_screen[j].name == 'player':
                             if detectCollision(self.objects_on_screen[i], self.objects_on_screen[j]):
                                 to_remove.append(i)
                                 self.player.life -= 1
-                                self.player.score -= 5
+                                self.player.score -= 5 * self.player.phase
                     # If it is a player shoot and it is at the end of the screen
                     if self.objects_on_screen[i].y <= 0:
                         to_remove.append(i)
@@ -213,6 +236,11 @@ class Game(Game_Object):
                     elif self.objects_on_screen[i].y >= self.objects_on_screen[i].get_screen_size()[1] - \
                             self.objects_on_screen[i].height:
                         to_remove.append(i)
+                elif self.objects_on_screen[i].name == 'enemy':  # Checks if enemy collided with player
+                    if detectCollision(self.objects_on_screen[i], self.player):
+                        to_remove.append(i)
+                        self.player.life -= 1
+                        self.player.score -= 5
 
             # Remove all collided objects
             to_remove.sort(reverse=True)

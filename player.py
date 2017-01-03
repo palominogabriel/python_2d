@@ -23,10 +23,10 @@ class Player(Game_Object):
 
     @x.setter
     def x(self,value):
-        if value > self.get_screen_size()[0] - math.ceil(self.width / 2):
+        if value >= self.get_screen_size()[0] - math.ceil(self.width / 2):
             self.__x = self.get_screen_size()[0] - math.ceil(self.width / 2)
-        elif value < -math.ceil(self.width / 2):
-            self.__x = -math.ceil(self.width / 2)
+        elif value <= (-math.ceil(self.width / 2)):
+            self.__x = (-math.ceil(self.width / 2))
         else:
             self.__x = value
 
@@ -72,12 +72,10 @@ class Player(Game_Object):
 
     # Behavior
     def move_left(self):
-        self.x -= 3
-
+        self.x -= 2
 
     def move_right(self):
-        self.x += 3
-
+        self.x += 2
 
     def shoot(self):
         myShoot = Shoot(self.screen)
@@ -85,7 +83,6 @@ class Player(Game_Object):
         myShoot.x = self.x + math.ceil(self.width / 2) - math.ceil(myShoot.width / 2)
         myShoot.y = self.y - myShoot.height - 1
         return myShoot
-
 
     # continuous player movement while holding down the move keys
     def handle_move(self):
