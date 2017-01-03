@@ -3,6 +3,7 @@ from game_object import Game_Object
 from player import Player
 from enemy import Enemy
 from island import Island
+import math
 
 
 def detectCollision(obj1, obj2):
@@ -77,6 +78,47 @@ class Game(Game_Object):
 
         # Update screen
         pygame.display.flip()
+
+    def pause_render(self):
+        # Create the pause surface
+        p_screen = pygame.Surface(self.get_screen_size())
+        # Set the surface transparency
+        p_screen.set_alpha(220)
+        # Set surface color
+        p_screen.fill((255, 255, 255))
+        # Draw surface
+        self.screen.blit(p_screen, (0, 0))
+        # Draw 'Game Paused'
+        font = pygame.font.SysFont("Arial Black", 60)
+        label = font.render("Game Paused", 1, (0, 0, 0))
+        self.screen.blit(label, (math.ceil(self.get_screen_size()[0] / 2) - math.ceil(label.get_size()[0] / 2), 30))
+        # Draw escape text
+        font = pygame.font.SysFont("Arial Black", 20)
+        label = font.render("'Esc' = Resume Game", 1, (0, 0, 0))
+        self.screen.blit(label, (5, self.get_screen_size()[1] - 30))
+        # Draw menu text
+        label = font.render("'m' = Return to menu", 1, (0, 0, 0))
+        self.screen.blit(label, (self.get_screen_size()[0] - label.get_size()[0] - 5, self.get_screen_size()[1] - 30))
+        # Update screen
+        pygame.display.flip()
+
+    def pause_loop(self):
+        game_paused = True
+        to_menu = False
+        while game_paused:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_ESCAPE:
+                        game_paused = False
+                    elif event.key == pygame.K_m:
+                        to_menu = True
+                        game_paused = False
+                # CLOSE WINDOW
+                if event.type == pygame.QUIT:
+                    return True, -1  # Window closed
+        return to_menu, self.player.score
+
+
 
     def loop(self):
         self.objects_on_screen = list()
@@ -153,7 +195,6 @@ class Game(Game_Object):
                     for j in range(len(self.objects_on_screen) - 1, 0, -1):
                         # Checks if hits an enemy and update score
                         if self.objects_on_screen[j].name == 'enemy':
-                            # if self.objects_on_screen[i].colliderect(self.objects_on_screen[j]):
                             if detectCollision(self.objects_on_screen[i], self.objects_on_screen[j]):
                                 to_remove.append(i)
                                 to_remove.append(j)
@@ -161,7 +202,6 @@ class Game(Game_Object):
                                 self.player.remaining_enemies -= 1
                         # Checks if hits the player and update score and life
                         elif self.objects_on_screen[j].name == 'player':
-                            # if self.objects_on_screen[i].colliderect(self.objects_on_screen[j]):
                             if detectCollision(self.objects_on_screen[i], self.objects_on_screen[j]):
                                 to_remove.append(i)
                                 self.player.life -= 1
@@ -183,14 +223,23 @@ class Game(Game_Object):
             self.player.handle_move()
 
             # Player shoot
+            player_exit = False
+            score = 0
             for event in pygame.event.get():
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_SPACE:
                         self.objects_on_screen.append(self.player.shoot())
-
+                    elif event.key == pygame.K_p:
+                        self.pause_render()
+                        player_exit, score = self.pause_loop()
                 # CLOSE WINDOW
                 if event.type == pygame.QUIT:
                     return False, self.player.score  # Window closed
+
+            if player_exit and score != -1:
+                return True, self.player.score
+            elif player_exit and score == -1:  # Score -1 means the window have been closed
+                return False, self.player.score
 
         # Window not closed
         return True, self.player.score
